@@ -39,9 +39,17 @@ export default function MovieCard({ movie, onRemove }) {
     else addToWatchlist();
   };
 
-  // Toggle overlay su tap/click della card (mobile)
+  // Toggle overlay solo su mobile
   const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
+    if (window.innerWidth <= 768) setOverlayVisible(!overlayVisible);
+  };
+
+  // Hover overlay solo desktop
+  const handleMouseEnter = () => {
+    if (window.innerWidth > 768) setOverlayVisible(true);
+  };
+  const handleMouseLeave = () => {
+    if (window.innerWidth > 768) setOverlayVisible(false);
   };
 
   return (
@@ -49,14 +57,16 @@ export default function MovieCard({ movie, onRemove }) {
       <div
         className="movie-card"
         style={{ width: "180px", position: "relative", cursor: "pointer" }}
-        onClick={toggleOverlay} // mostra overlay su mobile
+        onClick={toggleOverlay} // solo mobile
+        onMouseEnter={handleMouseEnter} // solo desktop
+        onMouseLeave={handleMouseLeave} // solo desktop
       >
         <img
           src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
           style={{ width: "100%", height: "250px", borderRadius: "10px" }}
         />
 
-        {(overlayVisible || window.innerWidth > 768) && (
+        {overlayVisible && (
           <div
             className="overlay"
             style={{
@@ -84,7 +94,7 @@ export default function MovieCard({ movie, onRemove }) {
 
             <Link
               to={`/movie/${movie.id}`}
-              onClick={(e) => e.stopPropagation()} // evita toggle overlay
+              onClick={(e) => e.stopPropagation()}
               style={{
                 display: "block",
                 marginTop: "4px",
